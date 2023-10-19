@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 import {Test} from "forge-std/Test.sol";
-import {MockToken} from "./mock/CurrencyToken.sol";
 import {ERC7527Agency, ERC7527App, ERC7527Factory} from "../src/ERC7527.sol";
 import {IERC7527App} from "../src/interfaces/IERC7527App.sol";
 import {IERC7527Agency, Asset} from "../src/interfaces/IERC7527Agency.sol";
