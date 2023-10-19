@@ -1,6 +1,9 @@
 name: test
 
-on: master
+on:
+  push:
+    branches:
+      - master
 
 env:
   FOUNDRY_PROFILE: ci
