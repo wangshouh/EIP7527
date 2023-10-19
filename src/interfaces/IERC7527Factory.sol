@@ -39,5 +39,5 @@ interface IERC7527Factory {
      */
     function deployWrap(AgencySettings calldata agencySettings, AppSettings calldata appSettings, bytes calldata data)
         external
-        returns (address);
+        returns (address, address);
 }

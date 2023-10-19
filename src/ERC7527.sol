@@ -57,41 +57,41 @@ contract ERC7527Agency is IERC7527Agency {
     function getStrategy() public pure override returns (address app, Asset memory asset, bytes memory attributeData) {
         uint256 offset = _getImmutableArgsOffset();
         address currency;
-        uint256 amount;
+        uint256 premium;
         address payable awardFeeRecipient;
         uint16 mintFeePercent;
         uint16 burnFeePercent;
         assembly {
             app := shr(0x60, calldataload(add(offset, 0)))
             currency := shr(0x60, calldataload(add(offset, 20)))
-            amount := calldataload(add(offset, 40))
+            premium := calldataload(add(offset, 40))
             awardFeeRecipient := shr(0x60, calldataload(add(offset, 72)))
             mintFeePercent := shr(0xf0, calldataload(add(offset, 92)))
             burnFeePercent := shr(0xf0, calldataload(add(offset, 94)))
         }
-        asset = Asset(currency, amount, awardFeeRecipient, mintFeePercent, burnFeePercent);
+        asset = Asset(currency, premium, awardFeeRecipient, mintFeePercent, burnFeePercent);
         attributeData = "";
     }
 
     function getUnwrapOracle(bytes memory data) public pure override returns (uint256 swap, uint256 fee) {
         uint256 input = abi.decode(data, (uint256));
         (, Asset memory _asset,) = getStrategy();
-        swap = _asset.amount + input * _asset.amount / 100;
+        swap = _asset.premium + input * _asset.premium / 100;
         fee = swap * _asset.burnFeePercent / 10000;
     }
 
     function getWrapOracle(bytes memory data) public pure override returns (uint256 swap, uint256 fee) {
         uint256 input = abi.decode(data, (uint256));
         (, Asset memory _asset,) = getStrategy();
-        swap = _asset.amount + input * _asset.amount / 100;
+        swap = _asset.premium + input * _asset.premium / 100;
         fee = swap * _asset.mintFeePercent / 10000;
     }
 
-    function _transfer(address currency, address recipient, uint256 amount) internal {
+    function _transfer(address currency, address recipient, uint256 premium) internal {
         if (currency == address(0)) {
-            payable(recipient).sendValue(amount);
+            payable(recipient).sendValue(premium);
         } else {
-            IERC20(currency).transfer(recipient, amount);
+            IERC20(currency).transfer(recipient, premium);
         }
     }
 
@@ -158,15 +158,15 @@ contract ERC7527Factory is IERC7527Factory {
     function deployWrap(AgencySettings calldata agencySettings, AppSettings calldata appSettings, bytes calldata)
         external
         override
-        returns (address agencyInstance)
+        returns (address appInstance, address agencyInstance)
     {
-        address appInstance = appSettings.implementation.clone(appSettings.immutableData);
+        appInstance = appSettings.implementation.clone(appSettings.immutableData);
         {
             agencyInstance = address(agencySettings.implementation).clone(
                 abi.encodePacked(
                     appInstance,
                     agencySettings.asset.currency,
-                    agencySettings.asset.amount,
+                    agencySettings.asset.premium,
                     agencySettings.asset.feeRecipient,
                     agencySettings.asset.mintFeePercent,
                     agencySettings.asset.burnFeePercent,

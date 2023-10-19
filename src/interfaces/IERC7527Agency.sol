@@ -1,9 +1,9 @@
-    // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 struct Asset {
     address currency;
-    uint256 amount;
+    uint256 premium;
     address feeRecipient;
     uint16 mintFeePercent;
     uint16 burnFeePercent;
@@ -39,7 +39,7 @@ interface IERC7527Agency {
     event Unwrap(address indexed to, uint256 indexed tokenId, uint256 price, uint256 fee);
 
     /**
-     * @dev Wrap some amount of currency into a non-fungible token.
+     * @dev Wrap currency premium into a non-fungible token.
      * @param to The address of the recipient of the newly created non-fungible token.
      * @param data The data to encode into ifself and the newly created non-fungible token.
      * @return The identifier of the newly created non-fungible token.
@@ -47,7 +47,7 @@ interface IERC7527Agency {
     function wrap(address to, bytes calldata data) external payable returns (uint256);
 
     /**
-     * @dev Unwrap a non-fungible token into some amount of currency.
+     * @dev Unwrap a non-fungible token into currency premium.
      *
      * Todo: event
      *
