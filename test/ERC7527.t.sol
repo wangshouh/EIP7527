@@ -52,6 +52,17 @@ contract ERC7527Test is Test {
         assertEq(IERC721Enumerable(appDeployAddress).ownerOf(1), address(this));
         assertEq(agencyDeployAddress.balance, uint256(0.1 ether));
         assertEq(address(1).balance, uint256(0.0001 ether));
+        assertEq(address(this).balance, uint256(1 ether - 0.1001 ether));
+    }
+
+    function testUnwarp() public {
+        vm.deal(address(this), 1 ether);
+        IERC7527Agency(payable(agencyDeployAddress)).wrap{value: 0.5 ether}(address(this), abi.encode(uint256(1)));
+        IERC7527Agency(payable(agencyDeployAddress)).unwrap(address(this), 1, bytes(""));
+
+        assertEq(IERC721Enumerable(appDeployAddress).totalSupply(), uint256(0));
+        assertEq(address(this).balance, uint256(0.9998 ether));
+        assertEq(address(1).balance, uint256(0.0002 ether));
     }
 
     receive() external payable {}
