@@ -222,3 +222,37 @@ function testUnwarp() public {
     assertEq(address(1).balance, uint256(0.0002 ether));
 }
 ```
+
+### 本地部署
+
+我们使用 `foundry` 框架中的 `anvil` 启动本地测试网，使用以下命令进行 `Implementation` 的部署:
+
+```bash
+forge script script/ERC7527.s.sol:ImplementationScript --broadcast --private-key $LOCAL_PRIVATE --rpc-url http://127.0.0.1:8545
+```
+上述命令执行完成后，我们可以获得如下输出:
+
+```bash
+== Return ==
+agency: contract ERC7527Agency 0x5FbDB2315678afecb367f032d93F642f64180aa3
+app: contract ERC7527App 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+factory: contract IERC7527Factory 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+```
+
+用户可以根据自身合约地址返回值对 `AgenctWithAppScript` 中的 `setUp()` 函数进行调整
+
+使用以下命令调用 `ERC7527Factory` 工厂合约的 `deployWrap` 进行第一次部署：
+
+```bash
+forge script script/ERC7527.s.sol:AgenctWithAppScript --broadcast --private-key $LOCAL_PRIVATE --rpc-url http://127.0.0.1:8545
+```
+
+读者可以在终端内获得以下输出:
+
+```solidity
+== Return ==
+cloneAgency: address 0x5392A33F7F677f59e833FEBF4016cDDD88fF9E67
+cloneApp: address 0xa783CDc72e34a174CCa57a6d9a74904d0Bec05A9
+```
+
+接下来，读者可以进行一系列其他操作。
