@@ -50,6 +50,7 @@ contract ERC7527Agency is IERC7527Agency {
             _transfer(address(0), payable(msg.sender), msg.value - swap - mintFee);
         }
         uint256 id_ = IERC7527App(_app).mint(to, data);
+        require(_sold + 1 == IERC721Enumerable(_app).totalSupply(), "ERC7527Agency: Reentrancy");
         emit Wrap(to, id_, swap, mintFee);
         return id_;
     }
