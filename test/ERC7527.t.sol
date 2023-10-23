@@ -82,7 +82,7 @@ contract ERC7527WarpReentrancy {
     address public agencyDeployAddress;
     uint256 public assetId = 1;
 
-    constructor (address agency) {
+    constructor(address agency) {
         agencyDeployAddress = agency;
     }
 
@@ -96,5 +96,4 @@ contract ERC7527WarpReentrancy {
             IERC7527Agency(payable(agencyDeployAddress)).wrap{value: 0.3 ether}(address(this), abi.encode(assetId));
         }
     }
-
 }
