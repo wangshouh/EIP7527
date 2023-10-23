@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/**
+ * @dev The settings of the agency.
+ * @param currency The address of the currency. If `currency` is 0, the currency is Ether.
+ * @param premium The base premium of the currency.
+ * @param feeRecipient The address of the fee recipient.
+ * @param mintFeePercent The fee of minting.
+ * @param burnFeePercent The fee of burning.
+ */
 struct Asset {
     address currency;
     uint256 premium;
