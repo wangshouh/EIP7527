@@ -1,4 +1,4 @@
-    // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import {Asset} from "./IERC7527Agency.sol";
@@ -35,6 +35,7 @@ interface IERC7527Factory {
      * @param agencySettings The settings of the agency.
      * @param appSettings The settings of the app.
      * @param data The data is additional data, it has no specified format and it is sent in call to `factory`.
+     * @return appInstance The address of the created proxy contract of appImplementation.
      * @return agencyInstance The address of the created proxy contract of agencyImplementation.
      */
     function deployWrap(AgencySettings calldata agencySettings, AppSettings calldata appSettings, bytes calldata data)
