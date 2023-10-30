@@ -251,8 +251,20 @@ forge script script/ERC7527.s.sol:AgenctWithAppScript --broadcast --private-key 
 
 ```solidity
 == Return ==
-cloneAgency: address 0x5392A33F7F677f59e833FEBF4016cDDD88fF9E67
-cloneApp: address 0xa783CDc72e34a174CCa57a6d9a74904d0Bec05A9
+cloneAgency: address 0xE451980132E65465d0a498c53f0b5227326Dd73F
+cloneApp: address 0x75537828f2ce51be7289709686A69CbFDbB714F1
 ```
 
 接下来，读者可以进行一系列其他操作。
+
+比如包装资产，命令如下:
+
+```bash
+cast send $AGENCY "wrap(address, bytes)(uint256)" $LOCAL_ACCOUNT "0x0000000000000000000000000000000000000000000000000000000000000001" --value 0.5ether --private-key $LOCAL_PRIVATE
+```
+
+又比如包装资产后解除包装，命令如下:
+
+```bash
+cast send $AGENCY "unwrap(address,uint256,bytes)" $LOCAL_ACCOUNT 1 "" --private-key $LOCAL_PRIVATE
+```
