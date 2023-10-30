@@ -52,7 +52,7 @@ contract AgenctWithAppScript is Script {
 
     function run() public returns (address cloneAgency, address cloneApp) {
         vm.startBroadcast();
-        (cloneAgency, cloneApp) = IERC7527Factory(factory).deployWrap(agencySettings, appSettings, bytes(""));
+        (cloneApp, cloneAgency) = IERC7527Factory(factory).deployWrap(agencySettings, appSettings, bytes(""));
         vm.stopBroadcast();
     }
 }
