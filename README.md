@@ -1,6 +1,6 @@
-## EIP7527
+## ERC7527
 
-[EIP7527](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-7527.md) 
+[ERC7527](https://github.com/lanyinzly/ERCs/blob/lanyinzly-patch-1/ERCS/erc-7527.md) 
 
 这是一个包含 `EIP7527` 标准实现的仓库，核心合约包含 `ERC7527Agency`/ `ERC7527App` / `ERC7527Factory` 三部分，其接口可以在 `src/interfaces` 内找到。
 
