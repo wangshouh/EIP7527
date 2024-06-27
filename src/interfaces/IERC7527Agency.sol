@@ -4,14 +4,14 @@ pragma solidity ^0.8.20;
 /**
  * @dev The settings of the agency.
  * @param currency The address of the currency. If `currency` is 0, the currency is Ether.
- * @param premium The base premium of the currency.
+ * @param basePremium The base premium of the currency.
  * @param feeRecipient The address of the fee recipient.
  * @param mintFeePercent The fee of minting.
  * @param burnFeePercent The fee of burning.
  */
 struct Asset {
     address currency;
-    uint256 premium;
+    uint256 basePremium;
     address feeRecipient;
     uint16 mintFeePercent;
     uint16 burnFeePercent;
@@ -47,6 +47,11 @@ interface IERC7527Agency {
     event Unwrap(address indexed to, uint256 indexed tokenId, uint256 price, uint256 fee);
 
     /**
+     * @dev Constructor of the instance contract.
+     */
+    function iconstructor() external;
+
+    /**
      * @dev Wrap currency premium into a non-fungible token.
      * @param to The address of the recipient of the newly created non-fungible token.
      * @param data The data to encode into ifself and the newly created non-fungible token.
@@ -56,9 +61,6 @@ interface IERC7527Agency {
 
     /**
      * @dev Unwrap a non-fungible token into currency premium.
-     *
-     * Todo: event
-     *
      * @param to The address of the recipient of the currency.
      * @param tokenId The identifier of the non-fungible token to unwrap.
      * @param data The data to encode into ifself and the non-fungible token with identifier `tokenId`.

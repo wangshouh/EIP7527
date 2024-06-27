@@ -34,7 +34,7 @@ contract AgenctWithAppScript is Script {
 
         asset = Asset({
             currency: address(0),
-            premium: 0.1 ether,
+            basePremium: 0.1 ether,
             feeRecipient: address(1),
             mintFeePercent: uint16(10),
             burnFeePercent: uint16(10)

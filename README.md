@@ -41,7 +41,7 @@ contract ERC7527Test is Test {
 
         Asset memory asset = Asset({
             currency: address(0),
-            premium: 0.1 ether,
+            basePremium: 0.1 ether,
             feeRecipient: address(1),
             mintFeePercent: uint16(10),
             burnFeePercent: uint16(10)
@@ -79,7 +79,7 @@ contract ERC7527Test is Test {
 接下来，我们详细介绍 `AgencySettings` 内使用的 `Asset` 结构体，该结构体用于定义 `agency` 合约的资产:
 
 - `currency` 此 `agency` 合约的所接受的 **币种**，如为 `address(0)` 则表示使用 ETH
-- `premium` 此 `agency` 合约的 **权利金**，具体来说是上文的 `k`
+- `basePremium` 此 `agency` 合约的 **初始权利金**，具体来说是上文的 `k`
 - `feeRecipient` 此 `agency` 合约的 **手续费收款人**，此处设置为为 `address(1)`
 - `mintFeePercent` 此 `agency` 合约的 **铸造手续费万分比**，此处设置为 `10`
 - `burnFeePercent` 此 `agency` 合约的 **销毁手续费万分比**，此处设置为 `10`
@@ -92,19 +92,19 @@ contract ERC7527Test is Test {
 function getStrategy() public pure override returns (address app, Asset memory asset, bytes memory attributeData) {
     uint256 offset = _getImmutableArgsOffset();
     address currency;
-    uint256 premium;
-    address payable awardFeeRecipient;
+    uint256 basePremium;
+    address payable feeRecipient;
     uint16 mintFeePercent;
     uint16 burnFeePercent;
     assembly {
         app := shr(0x60, calldataload(add(offset, 0)))
         currency := shr(0x60, calldataload(add(offset, 20)))
-        premium := calldataload(add(offset, 40))
-        awardFeeRecipient := shr(0x60, calldataload(add(offset, 72)))
+        basePremium := calldataload(add(offset, 40))
+        feeRecipient := shr(0x60, calldataload(add(offset, 72)))
         mintFeePercent := shr(0xf0, calldataload(add(offset, 92)))
         burnFeePercent := shr(0xf0, calldataload(add(offset, 94)))
     }
-    asset = Asset(currency, premium, awardFeeRecipient, mintFeePercent, burnFeePercent);
+    asset = Asset(currency, basePremium, feeRecipient, mintFeePercent, burnFeePercent);
     attributeData = "";
 }
 ```
@@ -147,14 +147,15 @@ function wrap(address to, bytes calldata data) external payable override returns
 function wrap(address to, bytes calldata data) external payable override returns (uint256) {
     (address _app, Asset memory _asset,) = getStrategy();
     uint256 _sold = IERC721Enumerable(_app).totalSupply();
-    (uint256 swap, uint256 mintFee) = getWrapOracle(abi.encode(_sold));
-    require(msg.value >= swap + mintFee, "ERC7527Agency: insufficient funds");
+    (uint256 premium, uint256 mintFee) = getWrapOracle(abi.encode(_sold));
+    require(msg.value >= premium + mintFee, "ERC7527Agency: insufficient funds");
     _transfer(address(0), _asset.feeRecipient, mintFee);
-    if (msg.value > swap + mintFee) {
-        _transfer(address(0), payable(msg.sender), msg.value - swap - mintFee);
+    if (msg.value > premium + mintFee) {
+        _transfer(address(0), payable(msg.sender), msg.value - premium - mintFee);
     }
     uint256 id_ = IERC7527App(_app).mint(to, data);
-    emit Wrap(to, id_, swap, mintFee);
+    require(_sold + 1 == IERC721Enumerable(_app).totalSupply(), "ERC7527Agency: Reentrancy");
+    emit Wrap(to, id_, premium, mintFee);
     return id_;
 }
 ```

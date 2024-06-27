@@ -27,7 +27,7 @@ contract ERC7527Test is Test {
 
         Asset memory asset = Asset({
             currency: address(0),
-            premium: 0.1 ether,
+            basePremium: 0.1 ether,
             feeRecipient: address(1),
             mintFeePercent: uint16(10),
             burnFeePercent: uint16(10)
@@ -46,6 +46,30 @@ contract ERC7527Test is Test {
         (appDeployAddress, agencyDeployAddress) = factory.deployWrap(agencySettings, appSettings, bytes(""));
 
         warpReentrancy = new ERC7527WarpReentrancy(agencyDeployAddress);
+    }
+
+    function test_ZeroBasePremium() public {
+        Asset memory asset = Asset({
+            currency: address(0),
+            basePremium: 0 ether,
+            feeRecipient: address(1),
+            mintFeePercent: uint16(10),
+            burnFeePercent: uint16(10)
+        });
+
+        AgencySettings memory agencySettings = AgencySettings({
+            implementation: payable(address(agency)),
+            asset: asset,
+            immutableData: bytes(""),
+            initData: bytes("")
+        });
+
+        AppSettings memory appSettings =
+            AppSettings({implementation: address(app), immutableData: bytes(""), initData: bytes("")});
+
+        vm.expectRevert("LnModule: zero basePremium");
+        (appDeployAddress, agencyDeployAddress) = factory.deployWrap(agencySettings, appSettings, bytes(""));
+
     }
 
     function testWarp() public {

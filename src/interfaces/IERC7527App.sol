@@ -19,6 +19,11 @@ interface IERC7527App {
     function getAgency() external view returns (address payable);
 
     /**
+     * @dev Constructor of the instance contract.
+     */
+    function iconstructor() external;
+    
+    /**
      * @dev Sets the agency of the non-fungible token.
      * @param agency The agency of the non-fungible token.
      */
